@@ -24,6 +24,7 @@ class ProductController {
       Uri.parse(Urls.deleteProductById(productId)),
     );
     if (response.statusCode == 200) {
+      await fetchProducts();
       return true;
     } else {
       return false;
@@ -50,9 +51,6 @@ class ProductController {
       }),
     );
 
-    ///For Debug
-    /*    print(response.body);
-    print(response.statusCode);*/
     if (response.statusCode == 200) {
       await fetchProducts();
       return true;
@@ -82,9 +80,6 @@ class ProductController {
       }),
     );
 
-    ///For Debug
-    /*    print(response.body);
-    print(response.statusCode);*/
     if (response.statusCode == 200) {
       await fetchProducts();
       return true;

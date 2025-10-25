@@ -33,13 +33,13 @@ class _HomePageState extends State<HomePage> {
     );
     TextEditingController imgController = TextEditingController(text: img);
     TextEditingController qtyController = TextEditingController(
-      text: qty.toString(),
+      text: qty?.toString(),
     );
     TextEditingController unitPriceController = TextEditingController(
-      text: unitPrice.toString(),
+      text: unitPrice?.toString(),
     );
     TextEditingController totalPriceController = TextEditingController(
-      text: totalPrice.toString(),
+      text: totalPrice?.toString(),
     );
 
     showDialog(
@@ -54,10 +54,7 @@ class _HomePageState extends State<HomePage> {
               labelText: 'Product Name',
             ),
             MyTextField(controller: imgController, labelText: 'Product Image'),
-            MyTextField(
-              controller: unitPriceController,
-              labelText: 'Price',
-            ),
+            MyTextField(controller: unitPriceController, labelText: 'Price'),
             MyTextField(controller: qtyController, labelText: 'Quantity'),
             MyTextField(
               controller: totalPriceController,
@@ -85,9 +82,10 @@ class _HomePageState extends State<HomePage> {
                             int.parse(qtyController.text),
                             int.parse(totalPriceController.text),
                           );
-                    setState(() {
+                    if (mounted) {
                       Navigator.pop(context);
-                    });
+                    }
+                    await fetchData();
                   },
                   child: isUpdate ? Text("Update") : Text("Add"),
                 ),
@@ -126,24 +124,23 @@ class _HomePageState extends State<HomePage> {
           return ProductCard(
             products: products,
             onDelete: () async {
-              await productController.fetchProducts();
-              productController.deleteProduct(products.sId.toString()).then((
-                value,
-              ) {
-                if (value == true) {
-                  setState(() {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Product Deleted')),
-                    );
-                  });
-                } else {
-                  setState(() {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Product Not Deleted')),
-                    );
-                  });
+              bool deleted = await productController.deleteProduct(
+                products.sId.toString(),
+              );
+              if (deleted) {
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Product Deleted')),
+                  );
+                  await fetchData();
                 }
-              });
+              } else {
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Product Not Deleted')),
+                  );
+                }
+              }
             },
             onEdit: () {
               productDialog(
@@ -155,7 +152,6 @@ class _HomePageState extends State<HomePage> {
                 img: products.img,
                 isUpdate: true,
               );
-              setState(() {});
             },
           );
         },
