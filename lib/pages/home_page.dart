@@ -21,10 +21,9 @@ class _HomePageState extends State<HomePage> {
   productDialog({
     String? sId,
     String? productName,
-    int? productCode,
     String? img,
-    int? qty,
     int? unitPrice,
+    int? qty,
     int? totalPrice,
     required bool isUpdate,
   }) {
@@ -32,11 +31,12 @@ class _HomePageState extends State<HomePage> {
       text: productName,
     );
     TextEditingController imgController = TextEditingController(text: img);
-    TextEditingController qtyController = TextEditingController(
-      text: qty?.toString(),
-    );
+
     TextEditingController unitPriceController = TextEditingController(
       text: unitPrice?.toString(),
+    );
+    TextEditingController qtyController = TextEditingController(
+      text: qty?.toString(),
     );
     TextEditingController totalPriceController = TextEditingController(
       text: totalPrice?.toString(),
@@ -71,15 +71,15 @@ class _HomePageState extends State<HomePage> {
                             sId!,
                             productNameController.text,
                             imgController.text,
-                            int.parse(unitPriceController.text),
                             int.parse(qtyController.text),
+                            int.parse(unitPriceController.text),
                             int.parse(totalPriceController.text),
                           )
                         : await productController.addProduct(
                             productNameController.text,
                             imgController.text,
-                            int.parse(unitPriceController.text),
                             int.parse(qtyController.text),
+                            int.parse(unitPriceController.text),
                             int.parse(totalPriceController.text),
                           );
                     if (mounted) {
@@ -128,11 +128,11 @@ class _HomePageState extends State<HomePage> {
                 products.sId.toString(),
               );
               if (deleted) {
+                await fetchData();
                 if (mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Product Deleted')),
                   );
-                  await fetchData();
                 }
               } else {
                 if (mounted) {
@@ -146,10 +146,10 @@ class _HomePageState extends State<HomePage> {
               productDialog(
                 sId: products.sId,
                 productName: products.productName,
-                qty: products.qty,
-                unitPrice: products.unitPrice,
-                totalPrice: products.totalPrice,
                 img: products.img,
+                unitPrice: products.unitPrice,
+                qty: products.qty,
+                totalPrice: products.totalPrice,
                 isUpdate: true,
               );
             },

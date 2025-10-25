@@ -7,15 +7,14 @@ import 'package:http/http.dart' as http;
 class ProductController {
   List<Data> products = [];
 
-  Future fetchProducts() async {
+  Future<void> fetchProducts() async {
     final response = await http.get(Uri.parse(Urls.readProduct));
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       ProductsData model = ProductsData.fromJson(data);
       products = model.data ?? [];
-      return products;
     } else {
-      throw Exception('Failed to load users');
+      throw Exception('Failed to load products');
     }
   }
 
@@ -23,12 +22,7 @@ class ProductController {
     final response = await http.get(
       Uri.parse(Urls.deleteProductById(productId)),
     );
-    if (response.statusCode == 200) {
-      await fetchProducts();
-      return true;
-    } else {
-      return false;
-    }
+    return response.statusCode == 200;
   }
 
   Future<bool> addProduct(
@@ -43,20 +37,14 @@ class ProductController {
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         "ProductName": name,
-        "ProductCode": DateTime.now().microsecondsSinceEpoch,
+        "ProductCode": DateTime.now().microsecondsSinceEpoch.toString(),
         "Img": img,
         "Qty": qty,
         "UnitPrice": unitPrice,
         "TotalPrice": totalPrice,
       }),
     );
-
-    if (response.statusCode == 200) {
-      await fetchProducts();
-      return true;
-    } else {
-      return false;
-    }
+    return response.statusCode == 200;
   }
 
   Future<bool> updateProduct(
@@ -71,20 +59,15 @@ class ProductController {
       Uri.parse(Urls.updateProductById(productId)),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
+        "Id": productId,
         "ProductName": name,
-        "ProductCode": DateTime.now().microsecondsSinceEpoch,
+        "ProductCode": DateTime.now().microsecondsSinceEpoch.toString(),
         "Img": img,
         "Qty": qty,
         "UnitPrice": unitPrice,
         "TotalPrice": totalPrice,
       }),
     );
-
-    if (response.statusCode == 200) {
-      await fetchProducts();
-      return true;
-    } else {
-      return false;
-    }
+    return response.statusCode == 200;
   }
 }
