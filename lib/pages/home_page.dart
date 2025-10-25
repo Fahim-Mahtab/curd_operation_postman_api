@@ -2,6 +2,8 @@ import 'package:curd_api_postman/controllers/product_controller.dart';
 import 'package:curd_api_postman/widgets/product_card.dart';
 import 'package:flutter/material.dart';
 
+import '../widgets/my_textfield.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -26,11 +28,19 @@ class _HomePageState extends State<HomePage> {
     int? totalPrice,
     required bool isUpdate,
   }) {
-    TextEditingController productNameController = TextEditingController();
-    TextEditingController imgController = TextEditingController();
-    TextEditingController qtyController = TextEditingController();
-    TextEditingController unitPriceController = TextEditingController();
-    TextEditingController totalPriceController = TextEditingController();
+    TextEditingController productNameController = TextEditingController(
+      text: productName,
+    );
+    TextEditingController imgController = TextEditingController(text: img);
+    TextEditingController qtyController = TextEditingController(
+      text: qty.toString(),
+    );
+    TextEditingController unitPriceController = TextEditingController(
+      text: unitPrice.toString(),
+    );
+    TextEditingController totalPriceController = TextEditingController(
+      text: totalPrice.toString(),
+    );
 
     showDialog(
       context: context,
@@ -39,50 +49,19 @@ class _HomePageState extends State<HomePage> {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            TextField(
+            MyTextField(
               controller: productNameController,
-              decoration: InputDecoration(
-                labelText: 'Product Name',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
+              labelText: 'Product Name',
             ),
-            TextField(
-              controller: imgController,
-              decoration: InputDecoration(
-                labelText: 'Product Image',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-            ),
-            TextField(
+            MyTextField(controller: imgController, labelText: 'Product Image'),
+            MyTextField(
               controller: unitPriceController,
-              decoration: InputDecoration(
-                labelText: 'Price',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
+              labelText: 'Price',
             ),
-            TextField(
-              controller: qtyController,
-              decoration: InputDecoration(
-                labelText: 'Quantity',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-            ),
-            TextField(
+            MyTextField(controller: qtyController, labelText: 'Quantity'),
+            MyTextField(
               controller: totalPriceController,
-              decoration: InputDecoration(
-                labelText: 'Total Price',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
+              labelText: 'Total Price',
             ),
             SizedBox(height: 10),
             Row(
@@ -90,18 +69,27 @@ class _HomePageState extends State<HomePage> {
               children: [
                 TextButton(
                   onPressed: () async {
-                    await productController.addProduct(
-                      productNameController.text,
-                      imgController.text,
-                      int.parse(unitPriceController.text),
-                      int.parse(qtyController.text),
-                      int.parse(totalPriceController.text),
-                    );
+                    isUpdate
+                        ? await productController.updateProduct(
+                            sId!,
+                            productNameController.text,
+                            imgController.text,
+                            int.parse(unitPriceController.text),
+                            int.parse(qtyController.text),
+                            int.parse(totalPriceController.text),
+                          )
+                        : await productController.addProduct(
+                            productNameController.text,
+                            imgController.text,
+                            int.parse(unitPriceController.text),
+                            int.parse(qtyController.text),
+                            int.parse(totalPriceController.text),
+                          );
                     setState(() {
                       Navigator.pop(context);
                     });
                   },
-                  child: Text("Add"),
+                  child: isUpdate ? Text("Update") : Text("Add"),
                 ),
                 TextButton(
                   onPressed: () {
@@ -149,13 +137,26 @@ class _HomePageState extends State<HomePage> {
                     );
                   });
                 } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Product Not Deleted')),
-                  );
+                  setState(() {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Product Not Deleted')),
+                    );
+                  });
                 }
               });
             },
-            onAdd: () {},
+            onEdit: () {
+              productDialog(
+                sId: products.sId,
+                productName: products.productName,
+                qty: products.qty,
+                unitPrice: products.unitPrice,
+                totalPrice: products.totalPrice,
+                img: products.img,
+                isUpdate: true,
+              );
+              setState(() {});
+            },
           );
         },
       ),

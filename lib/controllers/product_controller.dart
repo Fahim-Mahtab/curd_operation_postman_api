@@ -49,8 +49,41 @@ class ProductController {
         "TotalPrice": totalPrice,
       }),
     );
+
     ///For Debug
-/*    print(response.body);
+    /*    print(response.body);
+    print(response.statusCode);*/
+    if (response.statusCode == 200) {
+      await fetchProducts();
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> updateProduct(
+    String productId,
+    String name,
+    String img,
+    int qty,
+    int unitPrice,
+    int totalPrice,
+  ) async {
+    final response = await http.post(
+      Uri.parse(Urls.updateProductById(productId)),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        "ProductName": name,
+        "ProductCode": DateTime.now().microsecondsSinceEpoch,
+        "Img": img,
+        "Qty": qty,
+        "UnitPrice": unitPrice,
+        "TotalPrice": totalPrice,
+      }),
+    );
+
+    ///For Debug
+    /*    print(response.body);
     print(response.statusCode);*/
     if (response.statusCode == 200) {
       await fetchProducts();

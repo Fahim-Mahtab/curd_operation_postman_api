@@ -4,11 +4,11 @@ import '../model/products_data.dart';
 
 class ProductCard extends StatefulWidget {
   final VoidCallback onDelete;
-  final VoidCallback onAdd;
+  final VoidCallback onEdit;
   const ProductCard({
     super.key,
     required this.products,
-    required this.onDelete, required this.onAdd,
+    required this.onDelete, required this.onEdit,
   });
 
   final Data products;
@@ -56,7 +56,7 @@ class _ProductCardState extends State<ProductCard> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              IconButton(onPressed: widget.onAdd, icon: Icon(Icons.edit)),
+              IconButton(onPressed: widget.onEdit, icon: Icon(Icons.edit)),
               IconButton(onPressed: widget.onDelete, icon: Icon(Icons.delete)),
             ],
           ),
