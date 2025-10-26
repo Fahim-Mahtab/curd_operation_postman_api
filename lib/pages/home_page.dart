@@ -115,7 +115,7 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(title: const Text('Curd Operations')),
       body: GridView.builder(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          childAspectRatio: 0.59,
+          childAspectRatio: 0.50,
           crossAxisCount: 2,
         ),
         itemCount: productController.products.length,

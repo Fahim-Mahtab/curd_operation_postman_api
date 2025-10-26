@@ -22,15 +22,16 @@ class _ProductCardState extends State<ProductCard> {
   Widget build(BuildContext context) {
     return Card(
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           SizedBox(
-            height: 200,
+            height: 300,
             width: double.infinity,
             child: Container(
               color: Colors.grey[200],
               child: Image.network(
                 widget.products.img ?? '',
-                fit: BoxFit.fill,
+                fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) {
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -48,7 +49,7 @@ class _ProductCardState extends State<ProductCard> {
             ),
           ),
           SizedBox(height: 10),
-          SizedBox(height: 40, child: Text("${widget.products.productName}")),
+          SizedBox(height: 20, child: Text("${widget.products.productName}")),
           SizedBox(height: 10),
           Text(
             "Price: \$${widget.products.unitPrice} | Qty: ${widget.products.qty}",
